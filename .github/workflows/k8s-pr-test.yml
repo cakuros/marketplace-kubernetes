@@ -55,8 +55,8 @@ jobs:
       with:
         token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
 
-    - name: Create DigitalOcean Kubernetes test cluster (3 node 2vCPU 2GB)
-      run: doctl kubernetes cluster create --region sfo2 --tag gh-test-pr --size s-2vcpu-2gb --count 3 test-gh-mp-k8s-${{ github.event.pull_request.number }}
+    - name: Create DigitalOcean Kubernetes test cluster
+      run: doctl kubernetes cluster create --region nyc3 --tag gh-test-pr --size s-2vcpu-4gb --count 3 test-gh-mp-k8s-${{ github.event.pull_request.number }}
 
     - name: Save kubeconfig to GitHub Workspace
       run: doctl kubernetes cluster kubeconfig save test-gh-mp-k8s-${{ github.event.pull_request.number }}
