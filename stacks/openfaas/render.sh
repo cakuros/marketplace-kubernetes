@@ -5,7 +5,7 @@ set -e
 BUILD_DIR=$(mktemp -d)
 ROOT_DIR=$(git rev-parse --show-toplevel)
 
-SRC_VERSION="4.4.0"
+SRC_VERSION="5.2.2"
 
 cp -r "$ROOT_DIR"/src/openfaas/"$SRC_VERSION" $BUILD_DIR
 cp -r "$ROOT_DIR"/stacks/openfaas $BUILD_DIR
@@ -20,8 +20,7 @@ rm -rf "$ROOT_DIR"/stacks/openfaas/yaml
 mkdir -p "$ROOT_DIR"/stacks/openfaas/yaml
 
 # render openfaas
-helm template \
-  --name openfaas \
+helm template openfaas \
   --namespace openfaas \
-  --values "$ROOT_DIR"/src/openfaas/4.4.0/values.yaml \
+  --values "$ROOT_DIR"/src/openfaas/5.2.2/values.yaml \
   "$SRC_VERSION" > "$ROOT_DIR"/stacks/openfaas/yaml/openfaas.yaml

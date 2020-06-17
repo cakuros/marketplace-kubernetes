@@ -1,21 +1,24 @@
 #!/bin/sh
 
+# https://github.com/kubernetes/ingress-nginx/tree/master/charts/ingress-nginx
+
 set -e
 
-# create nginx-ingress namespace
-cat <<EOF | kubectl apply -f -
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: nginx-ingress
-EOF
+STACK="nginx-ingress"
+CHART="ingress-nginx/ingress-nginx"
+CHART_VERSION="2.1.0"
+NAMESPACE="ingress-nginx"
 
-# set kubectl namespace
-kubectl config set-context --current --namespace=nginx-ingress
+if [ -z "${MP_KUBERNETES}" ]; then
+  VALUES="values.yaml"
+else
+  VALUES="https://raw.githubusercontent.com/digitalocean/marketplace-kubernetes/master/stacks/${STACK}/values.yaml"
+fi
 
-# deploy nginx-ingress
-kubectl apply -f https://raw.githubusercontent.com/digitalocean/marketplace-kubernetes/master/stacks/nginx-ingress/yaml/nginx-ingress.yaml
-
-# ensure services are running
-kubectl rollout status deployment/nginx-ingress-controller
-kubectl rollout status deployment/nginx-ingress-default-backend
+helm upgrade "$STACK" "$CHART" \
+  --install \
+  --create-namespace \
+  --namespace "$NAMESPACE" \
+  --values "$VALUES" \
+  --version "$CHART_VERSION" \
+  --wait
